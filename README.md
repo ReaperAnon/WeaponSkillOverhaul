@@ -26,7 +26,7 @@ There are also some pre-included compatibility entries there for a perk from Ord
 ## Function and Usage
 The mod renames the skill trees, modifies perk, spell and magic effect conditions, creates and applies new weapon types, unlinks dual wield perks from the one handed skill tree (if you want it to), removes all non-dual wielding perk prerequisites and makes both the one and two handed skill satisfy the skill requirement.
 
-This means that even if you use maces or axes, the dual wielding perks will function as expected, even if you don't have the option to move them into a custom perk tree enables (although I highly recommend it).
+This means that even if you use maces or axes, the dual wielding perks will function as expected, even if you don't have the option to move them into a custom perk tree enabled (although I highly recommend it).
 
 I'll describe the options and what they do now, highly recommend to read this section (similar, but less verbose explanations can be found in the tooltips when mousing over any option).
 - **Two Handed Skill Name:** The name you want the two handed skill to have. Can be left empty to leave unchanged.
