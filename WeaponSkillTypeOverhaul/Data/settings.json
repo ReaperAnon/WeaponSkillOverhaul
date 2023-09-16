@@ -1,0 +1,186 @@
+{
+  "SkillNameTwoHanded": "Hafted",
+  "SkillAbbrvTwoHanded": "HFT",
+  "SkillNameOneHanded": "Bladed",
+  "SkillAbbrvOneHanded": "BLD",
+  "ModifySkillTypes": true,
+  "MoveDualWieldPerks": true,
+  "DualWieldPerks": [
+    "103870:Ordinator - Perks of Skyrim.esp",
+    "000D62:Ordinator - Combat Styles.esp",
+    "000D63:Ordinator - Combat Styles.esp",
+    "005E6A:Ordinator - Combat Styles.esp",
+    "005E69:Ordinator - Combat Styles.esp",
+    "005E66:Ordinator - Combat Styles.esp",
+    "005E68:Ordinator - Combat Styles.esp",
+    "005E6C:Ordinator - Combat Styles.esp"
+  ],
+  "WeaponDefinitions": {
+    "Dagger": {
+      "Priority": 0,
+      "WeaponTypeDefinition": {
+        "DesiredType": "01E711:Skyrim.esm",
+        "NameForm": "$name ($type)",
+        "IsTwoHanded": false
+      },
+      "Keys": [],
+      "Keywords": [
+        "01E713:Skyrim.esm"
+      ],
+      "Forms": [],
+      "ForbiddenKeys": [],
+      "ForbiddenKeywords": [],
+      "ForbiddenForms": []
+    },
+    "Sword": {
+      "Priority": 1,
+      "WeaponTypeDefinition": {
+        "DesiredType": "01E712:Skyrim.esm",
+        "NameForm": "$name ($type)",
+        "IsTwoHanded": false
+      },
+      "Keys": [],
+      "Keywords": [
+        "01E711:Skyrim.esm"
+      ],
+      "Forms": [],
+      "ForbiddenKeys": [],
+      "ForbiddenKeywords": [],
+      "ForbiddenForms": []
+    },
+    "War Axe": {
+      "Priority": 2,
+      "WeaponTypeDefinition": {
+        "DesiredType": "06D931:Skyrim.esm",
+        "NameForm": "$name ($type)",
+        "IsTwoHanded": true
+      },
+      "Keys": [],
+      "Keywords": [
+        "01E712:Skyrim.esm"
+      ],
+      "Forms": [],
+      "ForbiddenKeys": [],
+      "ForbiddenKeywords": [],
+      "ForbiddenForms": []
+    },
+    "Mace": {
+      "Priority": 3,
+      "WeaponTypeDefinition": {
+        "DesiredType": "06D931:Skyrim.esm",
+        "NameForm": "$name ($type)",
+        "IsTwoHanded": true
+      },
+      "Keys": [],
+      "Keywords": [
+        "01E714:Skyrim.esm"
+      ],
+      "Forms": [],
+      "ForbiddenKeys": [],
+      "ForbiddenKeywords": [],
+      "ForbiddenForms": []
+    },
+    "Greatsword": {
+      "Priority": 4,
+      "WeaponTypeDefinition": {
+        "DesiredType": "01E714:Skyrim.esm",
+        "NameForm": "$name ($type)",
+        "IsTwoHanded": false
+      },
+      "Keys": [],
+      "Keywords": [
+        "06D931:Skyrim.esm"
+      ],
+      "Forms": [],
+      "ForbiddenKeys": [],
+      "ForbiddenKeywords": [],
+      "ForbiddenForms": []
+    },
+    "Battle Axe": {
+      "Priority": 5,
+      "WeaponTypeDefinition": {
+        "DesiredType": "06D932:Skyrim.esm",
+        "NameForm": "$name ($type)",
+        "IsTwoHanded": true
+      },
+      "Keys": [],
+      "Keywords": [
+        "06D932:Skyrim.esm"
+      ],
+      "Forms": [],
+      "ForbiddenKeys": [],
+      "ForbiddenKeywords": [],
+      "ForbiddenForms": []
+    },
+    "Warhammer": {
+      "Priority": 6,
+      "WeaponTypeDefinition": {
+        "DesiredType": "06D930:Skyrim.esm",
+        "NameForm": "$name ($type)",
+        "IsTwoHanded": true
+      },
+      "Keys": [],
+      "Keywords": [
+        "06D930:Skyrim.esm"
+      ],
+      "Forms": [],
+      "ForbiddenKeys": [],
+      "ForbiddenKeywords": [],
+      "ForbiddenForms": []
+    }
+  },
+  "TextReplacements": [
+    {
+      "WeaponType": "01E711:Skyrim.esm",
+      "CategoryName": "dagger",
+      "Keys": [
+        "sword",
+        "one handed sword"
+      ]
+    },
+    {
+      "WeaponType": "01E712:Skyrim.esm",
+      "CategoryName": "greatsword",
+      "Keys": [
+        "war axe",
+        "one handed axe",
+        "waraxe"
+      ]
+    },
+    {
+      "WeaponType": "01E714:Skyrim.esm",
+      "CategoryName": "sword",
+      "Keys": [
+        "mace",
+        "one handed mace"
+      ]
+    },
+    {
+      "WeaponType": "06D931:Skyrim.esm",
+      "CategoryName": "small hafted weapon",
+      "Keys": [
+        "greatsword",
+        "great sword",
+        "two handed sword"
+      ]
+    },
+    {
+      "WeaponType": "06D932:Skyrim.esm",
+      "CategoryName": "battle axe",
+      "Keys": [
+        "battleaxe",
+        "battle axe",
+        "two handed axe"
+      ]
+    },
+    {
+      "WeaponType": "06D930:Skyrim.esm",
+      "CategoryName": "blunt weapon",
+      "Keys": [
+        "warhammer",
+        "war hammer",
+        "two handed hammer"
+      ]
+    }
+  ]
+}
