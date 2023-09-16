@@ -7,7 +7,7 @@ This is achieved by the mod changing the conditions of perks, spells and magic e
 ## Rationale
 I always liked the sort of "roleplaying" idea of having a longsword for general combat and a smaller arming sword for tighter quarters or maybe just to use a shield in hairy situations. With the release of mods like Precision and Immersive Equipment Displays, where now you could have them on your person and where using a shorter weapon in tight spaces actually MAKES SENSE so you don't get stuck hitting walls, the mere roleplaying aspect became more of a practical reality.
 
-Problem is, it didn't alleviate the problem of having to level two different skills just to use two different lengths of what is essentially the same weapon type. Now you don't have to!
+Problem is, it didn't alleviate the issue of having to level two different skills just to use two different lengths of what is essentially the same weapon type. Now you don't have to!
 
 By default it's set up to recreate the skills into Hafted and Bladed weapon skills respectively, but it can be kept mostly vanilla or used to just shift perk lines around (say you like the war axe perk tree in a perk mod and you would like curved swords in your game to use them as well). I'll explain how to use it further down.
 
