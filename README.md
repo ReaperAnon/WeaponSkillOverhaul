@@ -72,6 +72,8 @@ I'll describe the options and what they do now, highly recommend to read this se
 I know it's pretty confusing when reading through it, but you likely don't have to change the options much. If you want to, they become pretty self-explanatory when looking through the preset options there already.
 
 ## Credits
-Mutagen
-Darenii - Custom perk menu background
-Koveich - Sovngarde font
+### Mutagen
+
+### Darenii - Custom perk menu background
+
+### Koveich - Sovngarde font
