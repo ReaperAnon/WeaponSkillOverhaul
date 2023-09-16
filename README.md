@@ -1,4 +1,12 @@
 ![](https://i.imgur.com/WNHaQGf.png)
+### [Synthesis Install](https://github.com/Mutagen-Modding/Synthesis/wiki/Installation)
+### [How to Use](https://github.com/Mutagen-Modding/Synthesis/wiki/Typical-Usage#adding-patchers)
+
+The mod can be found either by searching for WeaponSkillOverhaul on the patcher list or added via the .synth file found [here](https://github.com/ReaperAnon/WeaponSkillOverhaul/releases/tag/meta).
+
+### Consider donating if you enjoy my work:
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A6P3CRK)
+
 # Details
 A dynamically generated mod to rework how the one and two handed weapon skills, their respective perks and related spell and magic effects work, with the ability to create and define new in-game weapon categories and assign them to perk trees on the fly. By default meant to recreate a more Oblivion-like skill distribution but it can be modified to largely any configuration you like.
 
