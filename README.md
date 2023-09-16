@@ -31,6 +31,9 @@ Should be compatible with absolutely everything. The only compatibility changes 
 
 There are also some pre-included compatibility entries there for a perk from Ordinator and for the ones in the Ordinator - Combat Styles mod. 
 
+## Presets
+**By default the mod comes with the settings set up for the vanilla perks (so without perk mods or perk mods that don't add any new perk branches, like for daggers). More presets will be uploaded shortly and linked to here.**
+
 ## Function and Usage
 The mod renames the skill trees, modifies perk, spell and magic effect conditions, creates and applies new weapon types, unlinks dual wield perks from the one handed skill tree (if you want it to), removes all non-dual wielding perk prerequisites and makes both the one and two handed skill satisfy the skill requirement.
 
