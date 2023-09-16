@@ -43,14 +43,6 @@ I'll describe the options and what they do now, highly recommend to read this se
   
 - **Dual Wield Perks:** A list of perks that should be counter as perks related to dual wielding. The mod has automatic detection, but some perks are more unique and some might have unique effects if you have either two weapons or just one weapon with an empty off-hand. There are also perks that are specifically for wielding one weapon with an empty off-hand that should be manually added to this list, but they'll still work in a more restricted way if you don't. Up to your discretion.
   
-- **Text Replacements:** A list of identifiers for the weapon keywords the original perks (or your installed perk mods) cover. This is for the mod to be able to recognize what phrases it should be replacing for what weapon type. To give an example, if you have greatswords using the mace perks, they will be linked to the base game's WeapTypeMace keyword. An entry in this list with the WeapTypeMace keyword needs a list of "keys" or text snippets to know what to identify maces by so the phrases can be automatically replaced with the mention of the new weapon type (in this case greatswords). If you add "mace" and "blunt weapon" to the list , then any mention of those two things will be replaced by "greatsword".
-  
-- **Type to Replace:** The weapon keyword the entry is associated with.
-  
-- **Category Name:** Here you can add a general category descriptor for what this weapon type should be called in the future. By default the patcher takes the names of all weapon types assigned to this keyword (for example, you could assign daggers, claws and short swords to the WeapTypeDagger keyword) and replaces any mention of the entries in the Name List with ALL of the weapon types. It would look ugly if a perk called "Dagger Specialization" would be renamed to "Dagger, Claw and Short Sword Specialization". If you set the category name to "Short Blade" in this example, then the perk would be renamed "Short Blade Specialization" instead.
-  
-- **Name List:** The above-mentioned list of identifiers that should each be replaced with the names of the new weapon categories belonging to the keyword used.
-  
 - **Weapon Type Assignments:** A dictionary of all the weapon types you want your game to have. You simply need to type a name into the textbox and press the + sign to create a new weapon type.
   
 - **Priority:** The priority of a weapon category determines if it can win over others. It's possible that a weapon might meet the conditions for belonging into multiple categories, in which case the priority number will decide which one it belongs to.
@@ -68,6 +60,15 @@ I'll describe the options and what they do now, highly recommend to read this se
 - **Weapon Forms:** You can browse and select actual weapons by their form ID here, they will be made part of the selected weapon type.
   
 - **Forbidden Keys, Keywords and Weapon Forms:** Same as above but the opposite way. Things that match any of these will NEVER be part of the selected weapon category.
+
+- **Text Replacements:** A list of identifiers for the weapon keywords the original perks (or your installed perk mods) use. This is for the mod to be able to recognize what phrases it should be replacing for the above-defined weapon types. For example, you could have 3 categories, "Dagger", "Claw" and "Short Sword", assigned to WeapTypeDagger. An entry in this list defined with WeapTypeDagger basically tells the mod which text snippets (defined in the Name List) should be replaced with that enumeration of "daggers, claws and short swords". To keep with this example, if the name list has an entry for "dagger" then every mention of the word "daggers" in perk descriptions will be replaced with "daggers, claws and short swords".
+  
+- **Type to Replace:** The weapon keyword the entry is associated with.
+  
+- **Category Name:** Here you can add a general category name by which you want the associated weapon categories to be referred to in perk names. It would look ugly if a perk called "Dagger Specialization" would be renamed to "Dagger, Claw and Short Sword Specialization". If you set the category name to "Short Blade" in this example, then the perk would be renamed "Short Blade Specialization" instead.
+  
+- **Name List:** The above-mentioned list of identifiers that should each be replaced with the names of the new weapon categories belonging to the keyword used.
+  
 
 I know it's pretty confusing when reading through it, but you likely don't have to change the options much. If you want to, they become pretty self-explanatory when looking through the preset options there already.
 
