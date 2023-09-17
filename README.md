@@ -64,7 +64,7 @@ I'll describe the options and what they do now, highly recommend to read this se
   
 - **Is Two Handed Skill:** Determines which skill this weapon category will belong to. To make it easy, if you set the "Desired Type" to a weapon type which has its perks in the two handed tree, this should be enabled. If you set it to one which has its perks in the one handed tree, it should be disabled.
   
-- **Keys:** A list of text snippets by which this weapon type can be identified. If you make a "curved sword" category and add "katana" as a key, then every weapon that has "katana" in its name will become a curved sword.
+- **Keys:** A list of text snippets by which this weapon type can be identified. If you make a "curved sword" category and add "katana" as a key, then every weapon that has "katana" in its editor ID will become a curved sword.
   
 - **Keywords:** Every weapon that has one of the keywords on the list will be part of the selected category. If you make a category called "straight sword" and add the WeapTypeSword keyword here, then every regular sword in the game will be a straight sword.
   
