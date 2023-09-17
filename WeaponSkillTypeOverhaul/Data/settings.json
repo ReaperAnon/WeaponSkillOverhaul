@@ -140,16 +140,15 @@
     },
     {
       "WeaponType": "01E712:Skyrim.esm",
-      "CategoryName": "greatsword",
+      "CategoryName": "sword",
       "Keys": [
         "war axe",
-        "one handed axe",
-        "waraxe"
+        "one handed axe"
       ]
     },
     {
       "WeaponType": "01E714:Skyrim.esm",
-      "CategoryName": "sword",
+      "CategoryName": "greatsword",
       "Keys": [
         "mace",
         "one handed mace"
@@ -160,7 +159,6 @@
       "CategoryName": "small hafted weapon",
       "Keys": [
         "greatsword",
-        "great sword",
         "two handed sword"
       ]
     },
@@ -169,7 +167,6 @@
       "CategoryName": "battle axe",
       "Keys": [
         "battleaxe",
-        "battle axe",
         "two handed axe"
       ]
     },
@@ -178,7 +175,6 @@
       "CategoryName": "blunt weapon",
       "Keys": [
         "warhammer",
-        "war hammer",
         "two handed hammer"
       ]
     }
