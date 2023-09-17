@@ -86,7 +86,7 @@ namespace WeaponSkillTypeOverhaul
             if (weaponDefinition.Keywords.Any(key => weaponGetter.HasKeyword(key)))
                 return weaponDefinition.Priority;
 
-            if (weaponDefinition.Keys.Any(key => weaponGetter.EditorID?.Replace(" ", "").Contains(key, StringComparison.OrdinalIgnoreCase) ?? false))
+            if (weaponDefinition.Keys.Any(key => weaponGetter.EditorID?.Replace(" ", "").Replace("-", "").Contains(key, StringComparison.OrdinalIgnoreCase) ?? false))
                 return weaponDefinition.Priority;
 
             return -1;
