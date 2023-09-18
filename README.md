@@ -8,7 +8,7 @@ The mod can be found either by searching for WeaponSkillOverhaul on the patcher 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A6P3CRK)
 
 # Details
-A dynamically generated mod to rework how the one and two handed weapon skills, their respective perks and related spell and magic effects work, with the ability to create and define new in-game weapon categories and assign them to perk trees on the fly. By default meant to recreate a more Oblivion-like skill distribution but it can be modified to largely any configuration you like.
+A dynamically generated mod to rework how the one and two handed weapon skills, their respective perks and related spell and magic effects work, with the ability to create and define new weapon categories and assign them to perk trees on the fly. Also includes the ability to generate custom skill trees. By default meant to recreate a more Oblivion-like skill distribution but it can be modified to largely any configuration you like.
 
 This is achieved by the mod changing the conditions of perks, spells and magic effects to work according to the settings created by the user, while distributing new keywords (without messing up the old ones or creating incompatibilities) and thus creating new weapon categories as well.
 
@@ -35,7 +35,17 @@ There are also some pre-included compatibility entries there for a perk from Ord
 
 ## Presets
 **By default the mod comes with the settings set up for the vanilla perks (so without perk mods or perk mods that don't add any new perk branches, like for daggers). More presets will be uploaded shortly and linked to here.**
+- **Vanilla Preset:** Rather basic, no new weapon types. Assigns daggers to also use the perks for swords.
+- **Perk Mod Preset:** Meant for users of perk mods like Adamant, Vokrii, etc. Adds a more specific dagger category that can be expanded and mixes up the perk distribution a bit.
+- **Perk Mod + New Weapon Types:** Same as the previous one but defines several new weapon types like spears, curved swords, straight swords, etc. Recommended if you use mods like Animated Armory or similar.
+- **Vokriinator + New Weapon Types + Stances:** A true showcase of what the mod can really do. Generates a more in-depth Stances perk tree by manually defining the perks from Vokrii and Ordinator as Stance perks and also includes the previous weapon types. Meant to be used with the regular version of Vokriinator, not Vokriinator Black.
 
+**Installing presets** is rather easy. Once you have the patcher added to Synthesis, it should generate a folder with a settings file inside of it. If the folder isn't there, try either opening the settings menu or running the patcher "dry" first.
+
+Simply navigate to your **Synthesis** install folder and then **Data\Skyrim Special Edition (or whatever profile you're using)\WeaponSkillOverhaul (or whatever name you gave the patcher)** and **replace the settings.json file** with any of the ones provided.
+
+All profiles can be downloaded [here in the releases section](https://github.com/ReaperAnon/WeaponSkillOverhaul/releases/tag/profiles).
+   
 ## Function and Usage
 The mod renames the skill trees, modifies perk, spell and magic effect conditions, creates and applies new weapon types, unlinks dual wield perks from the one handed skill tree (if you want it to), removes all non-dual wielding perk prerequisites and makes both the one and two handed skill satisfy the skill requirement.
 
@@ -49,12 +59,18 @@ I'll describe the options and what they do now, highly recommend to read this se
 - **One Handed Skill Name:** The name the one handed skill should have. Can be left empty.
   
 - **One Handed Abbreviation:** Same as the other one. Can be left empty.
+
+- **Change Perk Names:** Changes perk names if enabled. This usually results in kinda crappy changes as it's a straight text replacement and perk names usually have a sort of artistic flair to them.
+
+- **Change Spell Names:** Same as above, but enabled by default. Can be disabled if you don't want the names to be changed.
+ 
+- **Change Magic Effect Names:** Same as above.
   
 - **Modify Skill Types:** The first of the more involved options. If enabled, the patcher takes it as fact that you will mix and match one and two handed weapons between the skills. It will remove the perk requirements on the basic sprinting power attacks (there's no nice way to keep it) and will process dual wielding perks to separate them. If you intend to keep the actual skills unchanged (as in the one handed skill only containing one handed weapons and the two handed skill only containing two handed weapons), then you should disable this.
   
-- **Create Stances Perk Tree:** Only works if you have the optionally required custom skill mods enabled, otherwise it'll tell you you're missing them. If enabled, it will generate a new skill tree for all the detected dual wielding perks and move them there, so they doesn't clutter your unrelated replacement of the one handed skill tree.
+- **Create Stances Perk Tree:** Only works if you have the optionally required custom skill mods enabled, otherwise it'll tell you you're missing them. If enabled, it will generate a new skill tree for all the detected dual wielding perks and move them there, so they doesn't clutter your unrelated replacement of the one handed skill tree. Highly recommended.
   
-- **Dual Wield Perks:** A list of perks that should be counter as perks related to dual wielding. The mod has automatic detection, but some perks are more unique and some might have unique effects if you have either two weapons or just one weapon with an empty off-hand. There are also perks that are specifically for wielding one weapon with an empty off-hand that should be manually added to this list, but they'll still work in a more restricted way if you don't. Up to your discretion.
+- **Stance Perks:** A list of perks that should be counted as perks related to weapon stances (one and two handed, dual wielding, etc). The mod has automatic detection for dual wielding perks, but some perks are more unique and some might have unique effects if you have either two weapons or just one weapon with an empty off-hand. The perks added to this list will not have their functionality changed and will be detached from the perk trees or moved to a new one. Extremely fun to add the general two or one handed perks to this list (so basically almost every perk that is not directly related to a weapon type).
   
 - **Weapon Type Assignments:** A dictionary of all the weapon types you want your game to have. You simply need to type a name into the textbox and press the + sign to create a new weapon type.
   
