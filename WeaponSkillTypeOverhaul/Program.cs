@@ -64,8 +64,9 @@ namespace WeaponSkillTypeOverhaul
                     continue;
 
                 wasChanged |= Perks.ReplacePerkConditions(perkEntry);
-                wasChanged |= Text.ReplaceText(perkEntry.Name, text => perkEntry.Name = text, true);
                 wasChanged |= Text.ReplaceText(perkEntry.Description, text => perkEntry.Description = text);
+                if(Settings.ChangePerkNames)
+                    wasChanged |= Text.ReplaceText(perkEntry.Name, text => perkEntry.Name = text, true);
 
                 if (wasChanged)
                     state.PatchMod.Perks.Set(perkEntry);
@@ -84,7 +85,8 @@ namespace WeaponSkillTypeOverhaul
                 if (spellGetter.Type != SpellType.Spell)
                 {
                     wasChanged |= Text.ReplaceText(spellEntry.Description, text => spellEntry.Description = text, true);
-                    wasChanged |= Text.ReplaceText(spellEntry.Name, text => spellEntry.Name = text, true);
+                    if (Settings.ChangeSpellNames)
+                        wasChanged |= Text.ReplaceText(spellEntry.Name, text => spellEntry.Name = text, true);
                 }
 
                 if (wasChanged)
@@ -101,12 +103,32 @@ namespace WeaponSkillTypeOverhaul
                     continue;
 
                 wasChanged |= Perks.ReplaceMGEFConditions(mgef);
-                wasChanged |= Text.ReplaceText(mgef.Description, text => mgef.Description = text, true);
-                wasChanged |= Text.ReplaceText(mgef.Name, text => mgef.Name = text, true);
+                if (mgef.Archetype is MagicEffectArchetype arch && (arch.Type == MagicEffectArchetype.TypeEnum.Script || arch.Type == MagicEffectArchetype.TypeEnum.DualValueModifier || arch.Type == MagicEffectArchetype.TypeEnum.PeakValueModifier) || mgef.CastType == CastType.ConstantEffect || mgef.Archetype is MagicEffectPeakValueModArchetype)
+                {
+                    wasChanged |= Text.ReplaceText(mgef.Description, text => mgef.Description = text, true);
+                    if (Settings.ChangeMGEFNames)
+                        wasChanged |= Text.ReplaceText(mgef.Name, text => mgef.Name = text, true);
+                }
 
                 if (wasChanged)
                     state.PatchMod.MagicEffects.Set(mgef);
             }
+
+            foreach (var objEffGetter in state.LoadOrder.PriorityOrder.WinningOverrides<IObjectEffectGetter>())
+            {
+                var wasChanged = false;
+                var objEffect = objEffGetter.DeepCopy();
+
+                if (objEffect.CastType == CastType.ConstantEffect)
+                {
+                    if (Settings.ChangeMGEFNames)
+                        wasChanged |= Text.ReplaceText(objEffect.Name, text => objEffect.Name = text, true);
+                }
+
+                if (wasChanged)
+                    state.PatchMod.ObjectEffects.Set(objEffect);
+            }
+
             Console.WriteLine("Processed magic effects.");
 
             if (!Settings.ModifySkillTypes)
@@ -115,11 +137,11 @@ namespace WeaponSkillTypeOverhaul
             Perks.ReplaceAnimationConditions(state.PatchMod, state.LinkCache);
             Console.WriteLine("Processed animation conditions.");
 
+            Perks.ReplaceDualWieldConditions(state);
             if (Settings.MoveDualWieldPerks)
                 Perks.CreatePerkTree(state);
 
             Perks.RemoveDualWieldConnections(state);
-            Perks.ReplaceDualWieldConditions(state);
         }
     }
 }

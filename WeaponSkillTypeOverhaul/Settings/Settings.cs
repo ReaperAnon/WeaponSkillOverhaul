@@ -109,6 +109,21 @@ namespace WeaponSkillTypeOverhaul
         public string SkillAbbrvOneHanded { get; set; } = "BLD";
 
 
+        [SettingName("Change Perk Names")]
+        [Tooltip("If you want the mod to change the names of perks (when needed) turn this on. Might result in weird naming as the application doesn't have much of a sense of artistic decorum.")]
+        public bool ChangePerkNames { get; set; } = false;
+
+
+        [SettingName("Change Spell Names")]
+        [Tooltip("If you want the mod to change the names of spells (when needed) turn this on. Might result in weird naming as the application doesn't have much of a sense of artistic decorum.")]
+        public bool ChangeSpellNames { get; set; } = true;
+
+
+        [SettingName("Change Magic Effect Names")]
+        [Tooltip("If you want the mod to change the names of magic effects (when needed) turn this on. Might result in weird naming as the application doesn't have much of a sense of artistic decorum.")]
+        public bool ChangeMGEFNames { get; set; } = true;
+
+
         [SettingName("Modify Skill Types")]
         [Tooltip("If you don't want to change the skill types from one handed and two handed, just add new weapon types or mix and match perk trees, you should turn this option off to disable some of the functionality that shouldn't run.")]
         public bool ModifySkillTypes { get; set; } = false;
@@ -119,7 +134,7 @@ namespace WeaponSkillTypeOverhaul
         public bool MoveDualWieldPerks { get; set; } = false;
 
 
-        [SettingName("Dual Wield Perks")]
+        [SettingName("Stance Perks")]
         [Tooltip("By default the mod can determine dual wielding perks on its own, but some more creative ones (like ones that have effects for both single hand and dual wield) will not be picked up. They can be added manually to this list to take care of them.")]
         public List<IFormLink<IPerkGetter>> DualWieldPerks { get; set; } = new();
 

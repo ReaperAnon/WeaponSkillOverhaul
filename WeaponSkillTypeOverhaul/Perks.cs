@@ -15,10 +15,13 @@ using System.Text;
 using System.Threading.Tasks;
 using static WeaponSkillTypeOverhaul.Perks;
 
+using BuchheimTree;
+
 namespace WeaponSkillTypeOverhaul
 {
     internal class PerkNode
     {
+        // Required Data
         public bool Enable = false;
         public IFormLinkGetter<IPerkGetter> Perk = FormLink<IPerkGetter>.Null;
         public float X = 0;
@@ -26,6 +29,9 @@ namespace WeaponSkillTypeOverhaul
         public uint GridX = 0;
         public uint GridY = 0;
         public List<int> Links = new();
+
+        // Positioning
+        public uint TreeIdx = 0;
     }
 
     internal class PerkFile
@@ -55,7 +61,7 @@ namespace WeaponSkillTypeOverhaul
 
     public class Perks
     {
-        static Dictionary<IFormLinkGetter<IPerkGetter>, List<IFormLinkGetter<IPerkGetter>>> PerkLinkDict = new();
+        static readonly Dictionary<IFormLinkGetter<IPerkGetter>, List<IFormLinkGetter<IPerkGetter>>> PerkLinkDict = new();
 
         public class ConditionReplacement
         {
@@ -236,7 +242,7 @@ namespace WeaponSkillTypeOverhaul
                             Range condRange = new((int)rangeCapLow, condFloat.CompareOperator == CompareOperator.LessThan ? (int)condFloat.ComparisonValue - 1 : (int)(condFloat.ComparisonValue));
                             
                             // Already includes all weapon types, no need to overcomplicate the conditions.
-                            if (condRange.End.Value >= 7 && condRange.Start.Value <= 0)
+                            if (condRange.End.Value >= 6 && condRange.Start.Value <= 1)
                                 continue;
 
                             for (int j = condRange.End.Value; j >= condRange.Start.Value; --j)
@@ -254,7 +260,7 @@ namespace WeaponSkillTypeOverhaul
                             Range condRange = new(condFloat.CompareOperator == CompareOperator.GreaterThan ? (int)(condFloat.ComparisonValue + 1) : (int)condFloat.ComparisonValue, 6);
 
                             // Already includes all weapon types, no need to overcomplicate the conditions.
-                            if (condRange.End.Value >= 7 && condRange.Start.Value <= 0)
+                            if (condRange.End.Value >= 6 && condRange.Start.Value <= 1)
                                 continue;
 
                             for (int j = condRange.End.Value; j <= condRange.Start.Value; --j)
@@ -417,6 +423,31 @@ namespace WeaponSkillTypeOverhaul
             }
         }
 
+        private static Node<int> BuildTree(ref List<PerkNode> perkList, PerkNode perkNode, int idx)
+        {
+            Node<int> newNode = new() { Data = idx };
+
+            if (perkNode.Links.Count > 0)
+            {
+                newNode.Children = new();
+                foreach (var perkLink in perkNode.Links)
+                    newNode.Children.Add(BuildTree(ref perkList, perkList[perkLink], perkLink));
+            }
+
+            return newNode;
+        }
+
+        private static void SetNodePositions(Node<int> node, ref List<PerkNode> perkNodes, float spacing = 1)
+        {
+            perkNodes[node.Data].X = (float)node.Pos;
+            perkNodes[node.Data].Y = (float)(node.Level - 1) * spacing; // 1 less since root is invisible
+            perkNodes[node.Data].GridX = 0;
+            perkNodes[node.Data].GridY = 0;
+
+            foreach(var subNode in node.Children.EmptyIfNull())
+                SetNodePositions(subNode, ref perkNodes);
+        }
+
         public static void CreatePerkTree(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
         {
             PerkFile perkFile = new()
@@ -425,28 +456,119 @@ namespace WeaponSkillTypeOverhaul
                 Description = "Perks pertaining to stances, like dual wielding perks or any other available ones.",
                 Skydome = "dareni\\interface\\intdestinyperkskydome.nif",
                 RatioFile = state.OutputPath.Name,
-                Nodes = new() { new() {  Enable = true, Links = new() { 1 } } },
+                Nodes = new() { new() {  Enable = true, Links = new(), TreeIdx = 0 } },
             };
 
             MoveDualWieldPerks(state, perkFile);
 
-            // Connect the nodes.
-            // Enumerable.Range(2, perkFile.Nodes.Count - 2).ForEach(idx => perkFile.Nodes[0].Links.Add(idx));
+            // Connect the nodes as they were originally.
             for (int i = 1; i < perkFile.Nodes.Count; i++)
             {
                 for (int j = 1; j < perkFile.Nodes.Count; j++)
                 {
-                    if (PerkLinkDict[perkFile.Nodes[i].Perk].Any(entry => entry.Equals(perkFile.Nodes[j].Perk)))
-                        perkFile.Nodes[i].Links.Add(j);
+                    var perkNode1 = perkFile.Nodes[i];
+                    var perkNode2 = perkFile.Nodes[j];
+
+                    // If found in the dictionary, it means they were originally connected.
+                    if (PerkLinkDict[perkNode1.Perk].Any(entry => entry.Equals(perkNode2.Perk)))
+                    {
+                        // Check if the second perk actually requires the first one or not.
+                        if (!perkNode2.Perk.TryResolve(state.LinkCache, out var perk2Getter))
+                            continue;
+
+                        bool isRequired = perk2Getter.Conditions.Any(cond => cond.Data is IHasPerkConditionDataGetter data && data.Perk.Link.Equals(perkNode1.Perk));
+                        if(isRequired)
+                            perkNode1.Links.Add(j);
+                    }
                 }
             }
 
-            // Attach orphaned links to the first node.
-            for (int i = 2; i < perkFile.Nodes.Count; i++)
+            // Attach orphaned nodes to the root.
+            for (int i = 1; i < perkFile.Nodes.Count; i++)
             {
                 if (!perkFile.Nodes.Any(node => node.Links.Contains(i)))
-                    perkFile.Nodes[1].Links.Add(i);
+                    perkFile.Nodes[0].Links.Add(i);
             }
+
+            // Sort by skill requirement to have the lower skill requirement ones at the bottom.
+            perkFile.Nodes[0].Links.Sort((x, y) =>
+            {
+                var node1 = perkFile.Nodes[x];
+                var node2 = perkFile.Nodes[y];
+                if (node1.TreeIdx == node2.TreeIdx && node1.Perk.TryResolve(state.LinkCache, out var perk1Getter) && node2.Perk.TryResolve(state.LinkCache, out var perk2Getter))
+                {
+                    var skillReq1 = (perk1Getter.Conditions.First(cond => cond.Data is IGetBaseActorValueConditionDataGetter) as IConditionFloatGetter)!.ComparisonValue;
+                    var skillReq2 = (perk2Getter.Conditions.First(cond => cond.Data is IGetBaseActorValueConditionDataGetter) as IConditionFloatGetter)!.ComparisonValue;
+
+                    return skillReq1 > skillReq2 ? 1 : -1;
+                }
+                else
+                {
+                    return node1.TreeIdx > node2.TreeIdx ? 1 : -1;
+                }
+            });
+
+            // Merge perks of the same skill type into one tree each.
+            var first1H = perkFile.Nodes[perkFile.Nodes[0].Links.First(link => perkFile.Nodes[link].TreeIdx == 1)];
+            var first2H = perkFile.Nodes[perkFile.Nodes[0].Links.First(link => perkFile.Nodes[link].TreeIdx == 0)];
+            for (int i = perkFile.Nodes[0].Links.Count - 1; i >= 0; i--)
+            {
+                var targetNode = perkFile.Nodes[perkFile.Nodes[0].Links[i]];
+                if (targetNode.TreeIdx == first1H.TreeIdx && !first1H.Equals(targetNode))
+                {
+                    first1H.Links.Add(perkFile.Nodes[0].Links[i]);
+                    perkFile.Nodes[0].Links.RemoveAt(i);
+                }
+                else if (targetNode.TreeIdx == first2H.TreeIdx && !first2H.Equals(targetNode))
+                {
+                    first2H.Links.Add(perkFile.Nodes[0].Links[i]);
+                    perkFile.Nodes[0].Links.RemoveAt(i);
+                }
+            }
+
+            // Go through the first node links and add the first node as a requirement to all the ones that have no perk requirements.
+            foreach (var link in first1H.Links)
+            {
+                var targetNode = perkFile.Nodes[link];
+                if (!targetNode.Perk.TryResolve(state.LinkCache, out var perkGetter))
+                    continue;
+
+                if (!perkGetter.Conditions.Any(cond => cond.Data is IHasPerkConditionDataGetter))
+                {
+                    var perkSetter = state.PatchMod.Perks.GetOrAddAsOverride(perkGetter);
+
+                    ConditionFloat cond = new();
+                    cond.CompareOperator = CompareOperator.EqualTo;
+                    cond.ComparisonValue = 1;
+                    cond.Data = new HasPerkConditionData();
+                    (cond.Data as HasPerkConditionData)!.Perk = new FormLinkOrIndex<IPerkGetter>(cond.Data, first1H.Perk.FormKey);
+                    perkSetter.Conditions.Insert(0, cond);
+                }
+            }
+
+            foreach (var link in first2H.Links)
+            {
+                var targetNode = perkFile.Nodes[link];
+                if (!targetNode.Perk.TryResolve(state.LinkCache, out var perkGetter))
+                    continue;
+
+                if (!perkGetter.Conditions.Any(cond => cond.Data is IHasPerkConditionDataGetter))
+                {
+                    var perkSetter = state.PatchMod.Perks.GetOrAddAsOverride(perkGetter);
+
+                    ConditionFloat cond = new();
+                    cond.CompareOperator = CompareOperator.EqualTo;
+                    cond.ComparisonValue = 1;
+                    cond.Data = new HasPerkConditionData();
+                    (cond.Data as HasPerkConditionData)!.Perk = new FormLinkOrIndex<IPerkGetter>(cond.Data, first2H.Perk.FormKey);
+                    perkSetter.Conditions.Insert(0, cond);
+                }
+            }
+
+            // Build the skill tree.
+            Node<int> skillTree = BuildTree(ref perkFile.Nodes, perkFile.Nodes[0], 0);
+            TreeBuilder.GenerateTree(ref skillTree, 1);
+            SetNodePositions(skillTree, ref perkFile.Nodes, 0.4f);
 
             WritePerkFile(state, perkFile);
         }
@@ -513,26 +635,35 @@ namespace WeaponSkillTypeOverhaul
             if (!state.LinkCache.TryResolve(Skyrim.ActorValueInformation.AVOneHanded, out var oneHandedGetter))
                 return;
 
-            var oneHandedSetter = state.PatchMod.ActorValueInformation.GetOrAddAsOverride(oneHandedGetter);
-            foreach (var perkEntry in oneHandedSetter.PerkTree)
+            if (!state.LinkCache.TryResolve(Skyrim.ActorValueInformation.AVTwoHanded, out var twoHandedGetter))
+                return;
+
+            var avSetters = new List<ActorValueInformation>() { state.PatchMod.ActorValueInformation.GetOrAddAsOverride(oneHandedGetter), state.PatchMod.ActorValueInformation.GetOrAddAsOverride(twoHandedGetter) };
+            for(int i=0; i< avSetters.Count; i++)
             {
-                if (!Categories.DualWieldPerks.Any(perk => perk.Equals(perkEntry.Perk)))
-                    continue;
-
-                List<IFormLinkGetter<IPerkGetter>> links = new();
-                perkEntry.ConnectionLineToIndices.ForEach(link => links.Add(oneHandedSetter.PerkTree.First(entry => entry.Index == link).Perk));
-                PerkLinkDict[perkEntry.Perk] = links;
-
-                perkFile.Nodes.Add(new()
+                foreach (var perkEntry in avSetters[i].PerkTree)
                 {
-                    Enable = true,
-                    Perk = perkEntry.Perk,
-                    X = perkEntry.HorizontalPosition ?? 0,
-                    Y = perkEntry.VerticalPosition ?? 0,
-                    GridX = perkEntry.PerkGridX ?? 0,
-                    GridY = perkEntry.PerkGridY ?? 0,
-                    Links = new()
-                });
+                    if (!Categories.DualWieldPerks.Any(perk => perk.Equals(perkEntry.Perk)))
+                        continue;
+
+                    List<IFormLinkGetter<IPerkGetter>> links = new();
+                    perkEntry.ConnectionLineToIndices.ForEach(link => links.Add(avSetters[i].PerkTree.First(entry => entry.Index == link).Perk));
+                    PerkLinkDict[perkEntry.Perk] = links;
+
+                    perkFile.Nodes.Add(new()
+                    {
+                        Enable = true,
+                        Perk = perkEntry.Perk,
+                        X = perkEntry.HorizontalPosition ?? 0,
+                        Y = perkEntry.VerticalPosition ?? 0,
+                        GridX = perkEntry.PerkGridX ?? 0,
+                        GridY = perkEntry.PerkGridY ?? 0,
+                        Links = new(),
+
+                        // Positioning
+                        TreeIdx = (uint)i
+                    });
+                }
             }
         }
 
@@ -541,48 +672,53 @@ namespace WeaponSkillTypeOverhaul
             if (!state.LinkCache.TryResolve(Skyrim.ActorValueInformation.AVOneHanded, out var oneHandedGetter))
                 return;
 
-            var oneHandedSetter = state.PatchMod.ActorValueInformation.GetOrAddAsOverride(oneHandedGetter);
-            foreach (var perkEntry in oneHandedSetter.PerkTree)
+            if (!state.LinkCache.TryResolve(Skyrim.ActorValueInformation.AVTwoHanded, out var twoHandedGetter))
+                return;
+
+            var avSetters = new List<ActorValueInformation>() { state.PatchMod.ActorValueInformation.GetOrAddAsOverride(oneHandedGetter), state.PatchMod.ActorValueInformation.GetOrAddAsOverride(twoHandedGetter) };
+            foreach (var av in avSetters)
             {
-                // Remove dual wield perk connections to regular perks.
-                if (Categories.DualWieldPerks.Any(perk => perk.Equals(perkEntry.Perk)))
+                foreach (var perkEntry in av.PerkTree)
                 {
-                    for (int i = perkEntry.ConnectionLineToIndices.Count - 1; i >= 0; i--)
+                    // Remove dual wield perk connections to regular perks.
+                    if (Categories.DualWieldPerks.Any(perk => perk.Equals(perkEntry.Perk)))
                     {
-                        // If the perk index links to a regular perk.
-                        if (!Categories.DualWieldPerks.Any(perk => perk.Equals(oneHandedSetter.PerkTree.Where(entry => entry.Index == perkEntry.ConnectionLineToIndices[i]).First().Perk)))
+                        for (int i = perkEntry.ConnectionLineToIndices.Count - 1; i >= 0; i--)
                         {
-                            // Find the first link in the chain that is not a dual wield perk.
-                            var previousLink = oneHandedSetter.PerkTree.First(entry => entry.ConnectionLineToIndices.Contains(perkEntry.Index ?? 9999));
-                            while(Categories.DualWieldPerks.Any(perk => perk.Equals(previousLink.Perk)))
-                                previousLink = oneHandedSetter.PerkTree.First(entry => entry.ConnectionLineToIndices.Contains(previousLink.Index ?? 9999));
+                            // If the perk index links to a regular perk.
+                            if (!Categories.DualWieldPerks.Any(perk => perk.Equals(av.PerkTree.Where(entry => entry.Index == perkEntry.ConnectionLineToIndices[i]).First().Perk)))
+                            {
+                                // Find the first link in the chain that is not a dual wield perk.
+                                var previousLink = av.PerkTree.First(entry => entry.ConnectionLineToIndices.Contains(perkEntry.Index ?? 9999));
+                                while (Categories.DualWieldPerks.Any(perk => perk.Equals(previousLink.Perk)))
+                                    previousLink = av.PerkTree.First(entry => entry.ConnectionLineToIndices.Contains(previousLink.Index ?? 9999));
 
-                            if (previousLink is not null) // If a link is found that is not a dual wield perk, add the removed index to reconnect it.
-                                previousLink.ConnectionLineToIndices.Add(perkEntry.ConnectionLineToIndices[i]);
+                                previousLink?.ConnectionLineToIndices.Add(perkEntry.ConnectionLineToIndices[i]);
 
-                            // Remove the link.
-                            perkEntry.ConnectionLineToIndices.RemoveAt(i);
+                                // Remove the link.
+                                perkEntry.ConnectionLineToIndices.RemoveAt(i);
+                            }
                         }
                     }
                 }
-            }
 
-            foreach (var perkEntry in oneHandedSetter.PerkTree)
-            {
-                // Remove normal perk connections to dual wield perks.
-                if (!Categories.DualWieldPerks.Any(perk => perk.Equals(perkEntry.Perk)))
+                foreach (var perkEntry in av.PerkTree)
                 {
-                    for (int i = perkEntry.ConnectionLineToIndices.Count - 1; i >= 0; i--)
+                    // Remove normal perk connections to dual wield perks.
+                    if (!Categories.DualWieldPerks.Any(perk => perk.Equals(perkEntry.Perk)))
                     {
-                        // If the perk index links to a dual wield perk.
-                        if (Categories.DualWieldPerks.Any(perk => perk.Equals(oneHandedSetter.PerkTree.Where(entry => entry.Index == perkEntry.ConnectionLineToIndices[i]).First().Perk)))
+                        for (int i = perkEntry.ConnectionLineToIndices.Count - 1; i >= 0; i--)
                         {
-                            // Add it to the root so it stays in the tree.
-                            if(!Program.Settings.MoveDualWieldPerks)
-                                oneHandedSetter.PerkTree.First(entry => entry.Index == 0).ConnectionLineToIndices.Add(perkEntry.ConnectionLineToIndices[i]);
+                            // If the perk index links to a dual wield perk.
+                            if (Categories.DualWieldPerks.Any(perk => perk.Equals(av.PerkTree.Where(entry => entry.Index == perkEntry.ConnectionLineToIndices[i]).First().Perk)))
+                            {
+                                // Add it to the root so it stays in the tree.
+                                if (!Program.Settings.MoveDualWieldPerks)
+                                    av.PerkTree.First(entry => entry.Index == 0).ConnectionLineToIndices.Add(perkEntry.ConnectionLineToIndices[i]);
 
-                            // Remove the original.
-                            perkEntry.ConnectionLineToIndices.RemoveAt(i);
+                                // Remove the original.
+                                perkEntry.ConnectionLineToIndices.RemoveAt(i);
+                            }
                         }
                     }
                 }

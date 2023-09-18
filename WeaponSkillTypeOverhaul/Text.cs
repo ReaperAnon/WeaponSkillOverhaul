@@ -100,7 +100,7 @@ namespace WeaponSkillTypeOverhaul
             return allIndexes.Any();
         }
 
-        static void ModifyText(ref string origText, string textKey, int startIdx, List<string> replacements, List<string> addedPhrases, bool skillDescription)
+        static void ModifyText(ref string origText, string textKey, int startIdx, List<string> replacements, List<string> addedPhrases, bool isNameChange, bool skillDescription)
         {
             string newText = "";
             string fullWord = GetFullWord(origText, textKey, startIdx);
@@ -113,15 +113,15 @@ namespace WeaponSkillTypeOverhaul
                 if (isMajor)
                 {
                     formattedText = char.ToUpper(replacements[i][0]) + replacements[i][1..];
+                    if (isNameChange)
+                    {
+                        var idx = formattedText.Replace('-', ' ').IndexOf(' ');
+                        if (idx > -1)
+                            formattedText = formattedText[..(idx + 1)] + char.ToUpper(formattedText[idx + 1]) + formattedText[(idx + 2)..];
+                    }
+
                     isMajor = false;
                 }
-
-                /*if (isMajor || isDoubleMajor)
-                {
-                    var idx = formattedText.Replace('-', ' ').IndexOf(' ');
-                    if (idx > -1)
-                        formattedText = formattedText[..(idx + 1)] + char.ToUpper(formattedText[idx + 1]) + formattedText[(idx + 2)..];
-                }*/
 
                 if (isPlural)
                     formattedText += 's';
@@ -176,7 +176,7 @@ namespace WeaponSkillTypeOverhaul
                     {
                         if (IsWholeWord(origText, idx) && !WasSegmentProcessed(origText, addedPhrases, idx))
                         {
-                            ModifyText(ref origText, textKey, idx, replacements!, addedPhrases, isSkillDesc);
+                            ModifyText(ref origText, textKey, idx, replacements!, addedPhrases, isNameChange, isSkillDesc);
                             foundReplacement = true;
                             ChangeText(origText);
                         }
