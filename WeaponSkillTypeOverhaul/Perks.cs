@@ -509,59 +509,71 @@ namespace WeaponSkillTypeOverhaul
             });
 
             // Merge perks of the same skill type into one tree each.
-            var first1H = perkFile.Nodes[perkFile.Nodes[0].Links.First(link => perkFile.Nodes[link].TreeIdx == 1)];
-            var first2H = perkFile.Nodes[perkFile.Nodes[0].Links.First(link => perkFile.Nodes[link].TreeIdx == 0)];
-            for (int i = perkFile.Nodes[0].Links.Count - 1; i >= 0; i--)
+            int first1HIdx = -1;
+            int first2HIdx = -1;
+            try
             {
-                var targetNode = perkFile.Nodes[perkFile.Nodes[0].Links[i]];
-                if (targetNode.TreeIdx == first1H.TreeIdx && !first1H.Equals(targetNode))
-                {
-                    first1H.Links.Add(perkFile.Nodes[0].Links[i]);
-                    perkFile.Nodes[0].Links.RemoveAt(i);
-                }
-                else if (targetNode.TreeIdx == first2H.TreeIdx && !first2H.Equals(targetNode))
-                {
-                    first2H.Links.Add(perkFile.Nodes[0].Links[i]);
-                    perkFile.Nodes[0].Links.RemoveAt(i);
-                }
+                first1HIdx = perkFile.Nodes[0].Links.First(link => perkFile.Nodes[link].TreeIdx == 1);
+                first2HIdx = perkFile.Nodes[0].Links.First(link => perkFile.Nodes[link].TreeIdx == 0);
             }
+            catch (InvalidOperationException ex) { }
 
-            // Go through the first node links and add the first node as a requirement to all the ones that have no perk requirements.
-            foreach (var link in first1H.Links)
+            if (first1HIdx > -1 && first2HIdx > -1)
             {
-                var targetNode = perkFile.Nodes[link];
-                if (!targetNode.Perk.TryResolve(state.LinkCache, out var perkGetter))
-                    continue;
-
-                if (!perkGetter.Conditions.Any(cond => cond.Data is IHasPerkConditionDataGetter))
+                var first1H = perkFile.Nodes[first1HIdx];
+                var first2H = perkFile.Nodes[first2HIdx];
+                for (int i = perkFile.Nodes[0].Links.Count - 1; i >= 0; i--)
                 {
-                    var perkSetter = state.PatchMod.Perks.GetOrAddAsOverride(perkGetter);
-
-                    ConditionFloat cond = new();
-                    cond.CompareOperator = CompareOperator.EqualTo;
-                    cond.ComparisonValue = 1;
-                    cond.Data = new HasPerkConditionData();
-                    (cond.Data as HasPerkConditionData)!.Perk = new FormLinkOrIndex<IPerkGetter>(cond.Data, first1H.Perk.FormKey);
-                    perkSetter.Conditions.Insert(0, cond);
+                    var targetNode = perkFile.Nodes[perkFile.Nodes[0].Links[i]];
+                    if (targetNode.TreeIdx == first1H.TreeIdx && !first1H.Equals(targetNode))
+                    {
+                        first1H.Links.Add(perkFile.Nodes[0].Links[i]);
+                        perkFile.Nodes[0].Links.RemoveAt(i);
+                    }
+                    else if (targetNode.TreeIdx == first2H.TreeIdx && !first2H.Equals(targetNode))
+                    {
+                        first2H.Links.Add(perkFile.Nodes[0].Links[i]);
+                        perkFile.Nodes[0].Links.RemoveAt(i);
+                    }
                 }
-            }
 
-            foreach (var link in first2H.Links)
-            {
-                var targetNode = perkFile.Nodes[link];
-                if (!targetNode.Perk.TryResolve(state.LinkCache, out var perkGetter))
-                    continue;
-
-                if (!perkGetter.Conditions.Any(cond => cond.Data is IHasPerkConditionDataGetter))
+                // Go through the first node links and add the first node as a requirement to all the ones that have no perk requirements.
+                foreach (var link in first1H.Links)
                 {
-                    var perkSetter = state.PatchMod.Perks.GetOrAddAsOverride(perkGetter);
+                    var targetNode = perkFile.Nodes[link];
+                    if (!targetNode.Perk.TryResolve(state.LinkCache, out var perkGetter))
+                        continue;
 
-                    ConditionFloat cond = new();
-                    cond.CompareOperator = CompareOperator.EqualTo;
-                    cond.ComparisonValue = 1;
-                    cond.Data = new HasPerkConditionData();
-                    (cond.Data as HasPerkConditionData)!.Perk = new FormLinkOrIndex<IPerkGetter>(cond.Data, first2H.Perk.FormKey);
-                    perkSetter.Conditions.Insert(0, cond);
+                    if (!perkGetter.Conditions.Any(cond => cond.Data is IHasPerkConditionDataGetter))
+                    {
+                        var perkSetter = state.PatchMod.Perks.GetOrAddAsOverride(perkGetter);
+
+                        ConditionFloat cond = new();
+                        cond.CompareOperator = CompareOperator.EqualTo;
+                        cond.ComparisonValue = 1;
+                        cond.Data = new HasPerkConditionData();
+                        (cond.Data as HasPerkConditionData)!.Perk = new FormLinkOrIndex<IPerkGetter>(cond.Data, first1H.Perk.FormKey);
+                        perkSetter.Conditions.Insert(0, cond);
+                    }
+                }
+
+                foreach (var link in first2H.Links)
+                {
+                    var targetNode = perkFile.Nodes[link];
+                    if (!targetNode.Perk.TryResolve(state.LinkCache, out var perkGetter))
+                        continue;
+
+                    if (!perkGetter.Conditions.Any(cond => cond.Data is IHasPerkConditionDataGetter))
+                    {
+                        var perkSetter = state.PatchMod.Perks.GetOrAddAsOverride(perkGetter);
+
+                        ConditionFloat cond = new();
+                        cond.CompareOperator = CompareOperator.EqualTo;
+                        cond.ComparisonValue = 1;
+                        cond.Data = new HasPerkConditionData();
+                        (cond.Data as HasPerkConditionData)!.Perk = new FormLinkOrIndex<IPerkGetter>(cond.Data, first2H.Perk.FormKey);
+                        perkSetter.Conditions.Insert(0, cond);
+                    }
                 }
             }
 
