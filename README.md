@@ -14,6 +14,9 @@ This is achieved by the mod changing the conditions of perks, spells and magic e
 
 It's lightly similar to DanielUA's old True Equipment Overhaul (we have similarly bland naming schemes) which you could say it draws inspiration from.
 
+## YouTube Demonstration
+[![Vid1](https://img.youtube.com/vi/b-d-V9fGn5U/sddefault.jpg)](https://www.youtube.com/watch?v=b-d-V9fGn5U)
+
 ## Rationale
 I always liked the sort of "roleplaying" idea of having a longsword for general combat and a smaller arming sword for tighter quarters or maybe just to use a shield in hairy situations. With the release of mods like Precision and Immersive Equipment Displays, where now you could have them on your person and where using a shorter weapon in tight spaces actually MAKES SENSE so you don't get stuck hitting walls, the mere roleplaying aspect became more of a practical reality.
 
