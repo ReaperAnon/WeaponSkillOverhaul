@@ -72,14 +72,6 @@ namespace WeaponSkillTypeOverhaul
             public List<Condition> Replacements { get; set; } = new();
         }
 
-        public struct ProcessedCheck
-        {
-            public float ID { get; set; }
-            public CompareOperator Operator { get; set; }
-
-            public ProcessedCheck(float id, CompareOperator op) { ID = id; Operator = op; }
-        }
-
         private static List<IFormLink<IKeywordGetter>> GetKeywordsFromItemType(float retVal)
         {
             List<IFormLink<IKeywordGetter>> keywords = new();
@@ -548,10 +540,12 @@ namespace WeaponSkillTypeOverhaul
                     {
                         var perkSetter = state.PatchMod.Perks.GetOrAddAsOverride(perkGetter);
 
-                        ConditionFloat cond = new();
-                        cond.CompareOperator = CompareOperator.EqualTo;
-                        cond.ComparisonValue = 1;
-                        cond.Data = new HasPerkConditionData();
+                        ConditionFloat cond = new()
+                        {
+                            CompareOperator = CompareOperator.EqualTo,
+                            ComparisonValue = 1,
+                            Data = new HasPerkConditionData()
+                        };
                         (cond.Data as HasPerkConditionData)!.Perk = new FormLinkOrIndex<IPerkGetter>(cond.Data, first1H.Perk.FormKey);
                         perkSetter.Conditions.Insert(0, cond);
                     }
@@ -567,10 +561,12 @@ namespace WeaponSkillTypeOverhaul
                     {
                         var perkSetter = state.PatchMod.Perks.GetOrAddAsOverride(perkGetter);
 
-                        ConditionFloat cond = new();
-                        cond.CompareOperator = CompareOperator.EqualTo;
-                        cond.ComparisonValue = 1;
-                        cond.Data = new HasPerkConditionData();
+                        ConditionFloat cond = new()
+                        {
+                            CompareOperator = CompareOperator.EqualTo,
+                            ComparisonValue = 1,
+                            Data = new HasPerkConditionData()
+                        };
                         (cond.Data as HasPerkConditionData)!.Perk = new FormLinkOrIndex<IPerkGetter>(cond.Data, first2H.Perk.FormKey);
                         perkSetter.Conditions.Insert(0, cond);
                     }
