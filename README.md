@@ -27,7 +27,7 @@ By default it's set up to recreate the skills into Hafted and Bladed weapon skil
 ## Installation
 First, **it requires** the [Spell Perk Item Distributor](https://www.nexusmods.com/skyrimspecialedition/mods/36869) mod (and its requirements). It will not work properly otherwise.
 
-Second, **it requires its conventional mod counterpart** from the [releases section here](https://github.com/ReaperAnon/WeaponSkillOverhaul/releases/tag/mod). It contains scripts (lighthweight and event-based) that help keep track of the new weapon types.
+Second, **it requires its conventional mod counterpart** from the [releases section here](https://github.com/ReaperAnon/WeaponSkillOverhaul/releases/tag/mod). It contains scripts (lightweight and event-based) that help keep track of the new weapon types.
 
 Third, and **optional**, it requires [Custom Skills Framework](https://www.nexusmods.com/skyrimspecialedition/mods/41780) and [Custom Skills Menu](https://www.nexusmods.com/skyrimspecialedition/mods/62423) (and their requirements) if you want the mod to transfer dual wielding perks or other stance perks (like perks for only having a single weapon equipped) into their own custom perk tree, which would otherwise be left looking out of place (but universally functional and differentiated!) in whatever your new one handed skill tree will be.
 
